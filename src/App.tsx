@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useCallback, useState } from 'react';
+import { GlobalStyle } from './styles/global';
+import { Header } from './components/Header';
+import { Dashboard } from './components/Dashboard';
+import Modal from 'react-modal';
+import { CustomModal } from './components/CustomModal';
+import { CustomFormModal } from './components/CustomFormModal';
+import { Provider } from './hooks';
 
-function App() {
+Modal.setAppElement('#root');
+
+const App = () => {
+  const [isNewTransactionModalOpen, setIsNewTransactionModalOpen] = useState(false);
+
+  const handleOnChangeNewTransaction = useCallback(() => {
+    setIsNewTransactionModalOpen((prevState) => !prevState);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider>
+      <Header onOpenNewTransactionModal={handleOnChangeNewTransaction}/>
+      <Dashboard/>
+      <CustomModal 
+        isOpen={isNewTransactionModalOpen} 
+        handleOnChangeIsOpen={handleOnChangeNewTransaction} >
+        <CustomFormModal handleOnChangeIsOpen={handleOnChangeNewTransaction} />
+      </CustomModal>
+      <GlobalStyle/>
+    </Provider>
   );
 }
 
-export default App;
+export { App };
